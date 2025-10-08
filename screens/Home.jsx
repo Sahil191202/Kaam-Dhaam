@@ -1,5 +1,4 @@
-import { Stack } from 'expo-router';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,12 +6,25 @@ import {
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
+  Modal,
 } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+import { useRoute } from '@react-navigation/native';
 
 export default function Home() {
+  const route = useRoute();
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState('');
+
+  // Automatically open modal if param is sent
+  useEffect(() => {
+    if (route.params?.showLanguageDrawer) {
+      setDrawerVisible(true);
+    }
+  }, [route.params]);
+
   return (
     <>
-
       <SafeAreaView style={styles.container}>
         {/* Sticky Navbar */}
         <View style={styles.navbar}>
@@ -57,6 +69,33 @@ export default function Home() {
           </View>
         </ScrollView>
       </SafeAreaView>
+
+      {/* Bottom Drawer/Modal for Language Selection */}
+      <Modal
+        visible={drawerVisible}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setDrawerVisible(false)}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.drawer}>
+            <Text style={styles.drawerTitle}>Select Language</Text>
+            <Picker
+              selectedValue={selectedLanguage}
+              onValueChange={setSelectedLanguage}>
+              <Picker.Item label="English" value="en" />
+              <Picker.Item label="Hindi" value="hi" />
+              <Picker.Item label="Marathi" value="mr" />
+              <Picker.Item label="Tamil" value="ta" />
+              {/* Add more languages as required */}
+            </Picker>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setDrawerVisible(false)}>
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </>
   );
 }
@@ -114,4 +153,9 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   applyText: { color: '#fff', fontWeight: '600' },
+  modalOverlay: { flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.4)' },
+  drawer: { backgroundColor: '#fff', borderTopLeftRadius: 18, borderTopRightRadius: 18, padding: 24 },
+  drawerTitle: { fontSize: 22, fontWeight: '600', marginBottom: 10 },
+  closeButton: { marginTop: 18, padding: 12, backgroundColor: '#eee', borderRadius: 6, alignItems: 'center' },
+  closeButtonText: { fontSize: 16, color: '#2563eb', fontWeight: '700' },
 });

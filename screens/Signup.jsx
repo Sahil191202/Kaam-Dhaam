@@ -1,4 +1,5 @@
 import { Picker } from '@react-native-picker/picker';
+import { useNavigation } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -12,7 +13,6 @@ import {
     View,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
-import { useNavigation } from '@react-navigation/native';
 
 
 
@@ -57,7 +57,7 @@ export default function Signup() {
                     visibilityTime: TOAST_DURATION_MS,
                 });
                 // Navigate to Home page
-                navigation.navigate('Home') // adjust the path if your Home page is named differently
+                navigation.navigate('Home', { showLanguageDrawer: true }) // adjust the path if your Home page is named differently
             } else {
                 Toast.show({ type: 'error', text1: 'Submit failed', text2: data.message });
             }
